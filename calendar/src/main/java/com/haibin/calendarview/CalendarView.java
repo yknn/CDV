@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -61,7 +62,7 @@ public class CalendarView extends FrameLayout {
     /**
      * 月份快速选取
      */
-    private YearSelectLayout mSelectLayout;
+    public YearSelectLayout mSelectLayout;
 
     /**
      * 星期栏
@@ -194,6 +195,14 @@ public class CalendarView extends FrameLayout {
         mWeekPager.updateSelected(mDelegate.mSelectedCalendar, false);
     }
 
+
+    public void setMonth(int year, int month){
+        int position = 12 * (year - mDelegate.getMinYear()) + month - mDelegate.getMinYearMonth();
+        mDelegate.isShowYearSelectedLayout = false;
+        closeSelectLayout(position);
+    }
+
+
     /**
      * 设置日期范围
      *
@@ -267,6 +276,8 @@ public class CalendarView extends FrameLayout {
     @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public void showSelectLayout(final int year) {
+        Log.d("asd", "打开日历年月份快速选择");
+
         if (mParentLayout != null && mParentLayout.mContentView != null) {
             if (!mParentLayout.isExpand()) {
                 mParentLayout.expand();
@@ -281,7 +292,7 @@ public class CalendarView extends FrameLayout {
         mWeekBar.animate()
                 .translationY(-mWeekBar.getHeight())
                 .setInterpolator(new LinearInterpolator())
-                .setDuration(260)
+                .setDuration(200)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -298,7 +309,7 @@ public class CalendarView extends FrameLayout {
         mMonthPager.animate()
                 .scaleX(0)
                 .scaleY(0)
-                .setDuration(260)
+                .setDuration(200)
                 .setInterpolator(new LinearInterpolator())
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -306,6 +317,8 @@ public class CalendarView extends FrameLayout {
                         super.onAnimationEnd(animation);
                     }
                 });
+
+
     }
 
 
@@ -332,7 +345,7 @@ public class CalendarView extends FrameLayout {
      *
      * @param position 某一年
      */
-    private void closeSelectLayout(final int position) {
+    private void closeSelectLayout(final int position ) {
         mSelectLayout.setVisibility(GONE);
         mWeekBar.setVisibility(VISIBLE);
         if (position == mMonthPager.getCurrentItem()) {
@@ -345,7 +358,7 @@ public class CalendarView extends FrameLayout {
         mWeekBar.animate()
                 .translationY(0)
                 .setInterpolator(new LinearInterpolator())
-                .setDuration(280)
+                .setDuration(200)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -369,6 +382,8 @@ public class CalendarView extends FrameLayout {
                         }
                     }
                 });
+
+
     }
 
     /**
@@ -510,12 +525,26 @@ public class CalendarView extends FrameLayout {
             post(new Runnable() {
                 @Override
                 public void run() {
-                    mDelegate.mMonthChangeListener.onMonthChange(mDelegate.mSelectedCalendar.getYear(),
-                            mDelegate.mSelectedCalendar.getMonth());
+                    mDelegate.mMonthChangeListener.onMonthChange(mDelegate.mSelectedCalendar.getYear(), mDelegate.mSelectedCalendar.getMonth());
                 }
             });
         }
     }
+
+
+    public void setOnYearViewMonthChooseListener(OnYearViewChooseMonthListener listener) {
+        this.mDelegate.onYearViewChooseMonthListener = listener;
+        if (mDelegate.onYearViewChooseMonthListener != null) {
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    mDelegate.onYearViewChooseMonthListener.onViewClose();
+                }
+            });
+        }
+    }
+
+
 
     /**
      * 设置日期选中事件
@@ -878,5 +907,12 @@ public class CalendarView extends FrameLayout {
         void onDateLongClick(Calendar calendar);
     }
 
+
+    /**
+     * 年视图关闭事件
+     */
+    public interface OnYearViewChooseMonthListener{
+        void onViewClose();
+    }
 
 }

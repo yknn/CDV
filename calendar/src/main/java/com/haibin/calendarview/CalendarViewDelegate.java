@@ -232,6 +232,11 @@ final class CalendarViewDelegate {
     CalendarView.OnMonthChangeListener mMonthChangeListener;
 
     /**
+     * 年视图下月份的选择事件
+     */
+    CalendarView.OnYearViewChooseMonthListener onYearViewChooseMonthListener;
+
+    /**
      * 保存选中的日期
      */
     Calendar mSelectedCalendar;

@@ -96,7 +96,7 @@ public final class YearRecyclerView extends RecyclerView {
         mAdapter.setItemHeight(h / 4);
     }
 
-    interface OnMonthSelectedListener {
+    public interface OnMonthSelectedListener {
         void onMonthSelected(int year, int month);
     }
 }

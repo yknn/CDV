@@ -2,6 +2,7 @@ package com.haibin.calendarviewproject;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -10,6 +11,8 @@ import android.widget.Toast;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
+import com.haibin.calendarview.YearRecyclerView;
+import com.haibin.calendarview.YearSelectLayout;
 import com.haibin.calendarviewproject.base.activity.BaseActivity;
 import com.haibin.calendarviewproject.colorful.ColorfulActivity;
 import com.haibin.calendarviewproject.custom.CustomActivity;
@@ -28,7 +31,8 @@ public class MainActivity extends BaseActivity implements
         CalendarView.OnMonthChangeListener,
         CalendarView.OnYearChangeListener,
         CalendarView.OnDateLongClickListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        YearRecyclerView.OnMonthSelectedListener{
 
     TextView mTextMonthDay;
 
@@ -83,6 +87,12 @@ public class MainActivity extends BaseActivity implements
         mCalendarView.setOnYearChangeListener(this);
         mCalendarView.setOnDateSelectedListener(this);
         mCalendarView.setOnMonthChangeListener(this);
+        mCalendarView.mSelectLayout.setOnMonthSelectedListener(new YearRecyclerView.OnMonthSelectedListener() {
+            @Override
+            public void onMonthSelected(int year, int month) {
+                mCalendarView.setMonth(year,month);
+            }
+        });
         mCalendarView.setOnDateLongClickListener(this, true);
         mTextYear.setText(String.valueOf(mCalendarView.getCurYear()));
         mYear = mCalendarView.getCurYear();
@@ -194,6 +204,11 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onYearChange(int year) {
         mTextMonthDay.setText(String.valueOf(year));
+    }
+
+    @Override
+    public void onMonthSelected(int year, int month) {
+        Log.d("asd", "你好");
     }
 
 }
